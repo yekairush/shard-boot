@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +34,8 @@ import io.shardingsphere.shardingjdbc.api.ShardingDataSourceFactory;
  */
 @Configuration
 public class DataSourceConfig {
+
+	private static final Logger logger = LoggerFactory.getLogger(DataSourceConfig.class);
 
     @Autowired
     private Environment env;
@@ -64,7 +68,7 @@ public class DataSourceConfig {
         ShardingRuleConfiguration shardingRuleConfig = new ShardingRuleConfiguration();
         shardingRuleConfig.setDefaultDataSourceName(env.getProperty("shardingjdbc.default-data-source-name"));
         shardingRuleConfig.getTableRuleConfigs().add(tableRuleConfig);
-
+        logger.debug("getDataSource---->shardingRuleConfig "+shardingRuleConfig);
         // 获取数据源对象
         return ShardingDataSourceFactory.createDataSource(getDataSourceMap(), shardingRuleConfig,
                 new ConcurrentHashMap(), new Properties());
@@ -73,10 +77,12 @@ public class DataSourceConfig {
     private Map<String, DataSource> getDataSourceMap() {
         Map<String, DataSource> dataSourceMap = new HashMap<>();
         String[] names = env.getProperty("shardingjdbc.datasource.names").split(",");
+        //获取属性
         Properties properties = getProperties();
         for (String name : names) {
             dataSourceMap.put(name, buildDataSource(name, properties));
         }
+        logger.debug("DataSourceConfig---->getDataSourceMap "+dataSourceMap);
         return dataSourceMap;
     }
 
@@ -95,6 +101,7 @@ public class DataSourceConfig {
             if (dataSource instanceof HikariDataSource) {
                 ((HikariDataSource) dataSource).setDataSourceProperties(properties);
             }
+            logger.debug("DataSourceConfig---->buildDataSource "+dataSource);
             return dataSource;
         } catch (Exception e) {
             e.printStackTrace();
@@ -111,6 +118,7 @@ public class DataSourceConfig {
         p.put("max-lifetime", env.getProperty("hikari.max-lifetime"));
         p.put("connection-timeout", env.getProperty("hikari.connection-timeout"));
         p.put("connection-test-query", env.getProperty("hikari.connection-test-query"));
+        logger.debug("DataSourceConfig---->getProperties "+p);
         return p;
     }
 

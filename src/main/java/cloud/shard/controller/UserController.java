@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import cloud.shard.entity.User;
 import cloud.shard.service.UserService;
 
+/**
+ * 
+ * @author User
+ *
+ */
 @RestController
 public class UserController {
     
