@@ -21,10 +21,10 @@ public class ShardPreciseShardingAlgorithm implements PreciseShardingAlgorithm<L
 	@Override
 	public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<Long> shardingValue) {
 		String postfix = "" + (shardingValue.getValue() / 2) % 10;
-		logger.debug("ShardPreciseShardingAlgorithm--->postfix " + postfix);
+		logger.info("ShardPreciseShardingAlgorithm--->postfix " + postfix);
 		for (String tableName : availableTargetNames) {
 			if (tableName.endsWith(postfix)) {
-				logger.debug("ShardPreciseShardingAlgorithm--->tableName " + tableName);
+				logger.info("ShardPreciseShardingAlgorithm--->tableName " + tableName);
 				return tableName;
 			}
 		}

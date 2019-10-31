@@ -27,14 +27,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void addUser(User user) {
-		logger.debug("addUser-------------" + user);
+		logger.info("addUser-------------" + user);
 		userMapper.addUser(user);
 	}
 
 	@Override
 	public List<User> getUsers() {
 		List<User> list = userMapper.getUsers();
-		logger.debug("getUsers-------------" + list);
+		logger.info("getUsers-------------" + list);
 		return list;
 	}
 

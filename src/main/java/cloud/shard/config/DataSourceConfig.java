@@ -50,12 +50,16 @@ public class DataSourceConfig {
         tableRuleConfig.setActualDataNodes(actualDataNdes.replace("->", ""));
 
         // 配置分库 + 分表策略
+        //分库列
         String databaseShardingColumn = env.getProperty("shardingjdbc.database-strategy.inline.sharding-column");
+        //分库算法表达式
         String databaseAlgorithmExpression = env.getProperty("shardingjdbc.database-strategy.inline.algorithm-expression");
+        //分表列
         String tableShardingColumn = env.getProperty("shardingjdbc.tables.standard.sharding-column");
+        //规则配置
         tableRuleConfig.setDatabaseShardingStrategyConfig(new InlineShardingStrategyConfiguration(
                 databaseShardingColumn, databaseAlgorithmExpression.replace("->", "")));
-
+        //分库分表算法
         String preciseAlgorithmClassName = env.getProperty("shardingjdbc.tables.standard.precise-algorithm-class-name");
         try {
             PreciseShardingAlgorithm algorithm = (PreciseShardingAlgorithm) Class.forName(preciseAlgorithmClassName).newInstance();
@@ -68,7 +72,7 @@ public class DataSourceConfig {
         ShardingRuleConfiguration shardingRuleConfig = new ShardingRuleConfiguration();
         shardingRuleConfig.setDefaultDataSourceName(env.getProperty("shardingjdbc.default-data-source-name"));
         shardingRuleConfig.getTableRuleConfigs().add(tableRuleConfig);
-        logger.debug("getDataSource---->shardingRuleConfig "+shardingRuleConfig);
+        logger.info("getDataSource---->shardingRuleConfig "+shardingRuleConfig);
         // 获取数据源对象
         return ShardingDataSourceFactory.createDataSource(getDataSourceMap(), shardingRuleConfig,
                 new ConcurrentHashMap(), new Properties());
@@ -82,7 +86,7 @@ public class DataSourceConfig {
         for (String name : names) {
             dataSourceMap.put(name, buildDataSource(name, properties));
         }
-        logger.debug("DataSourceConfig---->getDataSourceMap "+dataSourceMap);
+        logger.info("DataSourceConfig---->getDataSourceMap "+dataSourceMap);
         return dataSourceMap;
     }
 
@@ -94,6 +98,7 @@ public class DataSourceConfig {
             Class<DataSource> typeClass = (Class<DataSource>) Class.forName(type);
             String driverClassName = env.getProperty(prefix + ".driver-class-name");
             String url = env.getProperty(prefix + ".url");
+            logger.info("buildDataSource--->url="+url);
             String username = env.getProperty(prefix + ".username");
             String password = env.getProperty(prefix + ".password");
             DataSource dataSource = DataSourceBuilder.create().type(typeClass).driverClassName(driverClassName).url(url)
@@ -101,7 +106,7 @@ public class DataSourceConfig {
             if (dataSource instanceof HikariDataSource) {
                 ((HikariDataSource) dataSource).setDataSourceProperties(properties);
             }
-            logger.debug("DataSourceConfig---->buildDataSource "+dataSource);
+            logger.info("DataSourceConfig---->buildDataSource "+dataSource);
             return dataSource;
         } catch (Exception e) {
             e.printStackTrace();
@@ -118,7 +123,7 @@ public class DataSourceConfig {
         p.put("max-lifetime", env.getProperty("hikari.max-lifetime"));
         p.put("connection-timeout", env.getProperty("hikari.connection-timeout"));
         p.put("connection-test-query", env.getProperty("hikari.connection-test-query"));
-        logger.debug("DataSourceConfig---->getProperties "+p);
+        logger.info("DataSourceConfig---->getProperties "+p);
         return p;
     }
 
