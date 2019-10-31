@@ -18,9 +18,13 @@ public class ShardPreciseShardingAlgorithm implements PreciseShardingAlgorithm<L
 
 	private static final Logger logger = LoggerFactory.getLogger(ShardPreciseShardingAlgorithm.class);
 
+	/**
+	 * 
+	 */
 	@Override
 	public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<Long> shardingValue) {
-		String postfix = "" + (shardingValue.getValue() / 2) % 10;
+		//注意分片数shardingjdbc.actual-data-nodes=ds$->{0..1}.user_$->{[0, 1, 2]}
+		String postfix = "" + (shardingValue.getValue() / 2) % 3;
 		logger.info("ShardPreciseShardingAlgorithm--->postfix " + postfix);
 		for (String tableName : availableTargetNames) {
 			if (tableName.endsWith(postfix)) {

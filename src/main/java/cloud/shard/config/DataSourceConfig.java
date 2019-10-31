@@ -45,7 +45,9 @@ public class DataSourceConfig {
     public DataSource getDataSource() throws SQLException {
         // 配置表规则
         TableRuleConfiguration tableRuleConfig = new TableRuleConfiguration();
+        //
         tableRuleConfig.setLogicTable(env.getProperty("shardingjdbc.logic-table"));
+        //
         String actualDataNdes = env.getProperty("shardingjdbc.actual-data-nodes");
         tableRuleConfig.setActualDataNodes(actualDataNdes.replace("->", ""));
 
@@ -83,6 +85,7 @@ public class DataSourceConfig {
         String[] names = env.getProperty("shardingjdbc.datasource.names").split(",");
         //获取属性
         Properties properties = getProperties();
+        logger.info("getDataSourceMap---->properties "+properties);
         for (String name : names) {
             dataSourceMap.put(name, buildDataSource(name, properties));
         }
@@ -123,7 +126,6 @@ public class DataSourceConfig {
         p.put("max-lifetime", env.getProperty("hikari.max-lifetime"));
         p.put("connection-timeout", env.getProperty("hikari.connection-timeout"));
         p.put("connection-test-query", env.getProperty("hikari.connection-test-query"));
-        logger.info("DataSourceConfig---->getProperties "+p);
         return p;
     }
 

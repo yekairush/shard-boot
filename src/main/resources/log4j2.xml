@@ -4,19 +4,18 @@
         <Property name="projectName">shard-boot</Property>
     </Properties>
     <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout
-                    pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %L  %logger{36} - %msg%n" />
-        </Console>
-        <RollingFile name="RollingFile" filename="../logs/shard-boot.log"
-                     filepattern="../logs/${projectName}_%d{yyyyMMdd}.log">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n" />
-            <Policies>
-                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
-            </Policies>
-            <DefaultRolloverStrategy max="3" />
-        </RollingFile>
-    </Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout	pattern="%d{yyyy-MM-dd HH:mm:ss}[%thread][%class][%line] ==> %msg%n" />
+		</Console>
+		<RollingFile name="RollingFile" filename="../logs/shard-boot.log"
+					 filepattern="../logs/${projectName}_%d{yyyyMMdd}.log">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+			</Policies>
+			<DefaultRolloverStrategy max="3" />
+		</RollingFile>
+	</Appenders>
     <Loggers>
         <Root level="INFO" additivity="true">
             <AppenderRef ref="Console" />
