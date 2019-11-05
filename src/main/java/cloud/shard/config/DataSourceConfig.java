@@ -45,26 +45,26 @@ public class DataSourceConfig {
     public DataSource getDataSource() throws SQLException {
         // 配置表规则
         TableRuleConfiguration tableRuleConfig = new TableRuleConfiguration();
-        //
+        //配置表规则
         tableRuleConfig.setLogicTable(env.getProperty("shardingjdbc.logic-table"));
-        //
+        //节点
         String actualDataNdes = env.getProperty("shardingjdbc.actual-data-nodes");
         tableRuleConfig.setActualDataNodes(actualDataNdes.replace("->", ""));
 
         // 配置分库 + 分表策略
-        //分库列
         String databaseShardingColumn = env.getProperty("shardingjdbc.database-strategy.inline.sharding-column");
         //分库算法表达式
         String databaseAlgorithmExpression = env.getProperty("shardingjdbc.database-strategy.inline.algorithm-expression");
         //分表列
         String tableShardingColumn = env.getProperty("shardingjdbc.tables.standard.sharding-column");
-        //规则配置
+        //配置分库 + 分表策略
         tableRuleConfig.setDatabaseShardingStrategyConfig(new InlineShardingStrategyConfiguration(
                 databaseShardingColumn, databaseAlgorithmExpression.replace("->", "")));
         //分库分表算法
         String preciseAlgorithmClassName = env.getProperty("shardingjdbc.tables.standard.precise-algorithm-class-name");
         try {
             PreciseShardingAlgorithm algorithm = (PreciseShardingAlgorithm) Class.forName(preciseAlgorithmClassName).newInstance();
+            //分表策略，缺省表示使用默认分表策略
             tableRuleConfig.setTableShardingStrategyConfig(new StandardShardingStrategyConfiguration(tableShardingColumn, algorithm));
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,6 +80,10 @@ public class DataSourceConfig {
                 new ConcurrentHashMap(), new Properties());
     }
 
+    /**
+     * 获取数据源
+     * @return
+     */
     private Map<String, DataSource> getDataSourceMap() {
         Map<String, DataSource> dataSourceMap = new HashMap<>();
         String[] names = env.getProperty("shardingjdbc.datasource.names").split(",");
@@ -87,6 +91,7 @@ public class DataSourceConfig {
         Properties properties = getProperties();
         logger.info("getDataSourceMap---->properties "+properties);
         for (String name : names) {
+        	//数据源对应的配置参数
             dataSourceMap.put(name, buildDataSource(name, properties));
         }
         logger.info("DataSourceConfig---->getDataSourceMap "+dataSourceMap);
@@ -117,6 +122,10 @@ public class DataSourceConfig {
         return null;
     }
 
+    /**
+     * 獲取数据源属性集
+     * @return
+     */
     private Properties getProperties() {
         Properties p = new Properties();
         p.put("minimum-idle", env.getProperty("hikari.minimum-idle"));
