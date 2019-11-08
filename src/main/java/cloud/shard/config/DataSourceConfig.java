@@ -45,19 +45,14 @@ public class DataSourceConfig {
     public DataSource getDataSource() throws SQLException {
         // 配置表规则
         TableRuleConfiguration tableRuleConfig = new TableRuleConfiguration();
-        //配置表规则
         tableRuleConfig.setLogicTable(env.getProperty("shardingjdbc.logic-table"));
-        //节点
         String actualDataNdes = env.getProperty("shardingjdbc.actual-data-nodes");
         tableRuleConfig.setActualDataNodes(actualDataNdes.replace("->", ""));
 
         // 配置分库 + 分表策略
         String databaseShardingColumn = env.getProperty("shardingjdbc.database-strategy.inline.sharding-column");
-        //分库算法表达式
         String databaseAlgorithmExpression = env.getProperty("shardingjdbc.database-strategy.inline.algorithm-expression");
-        //分表列
         String tableShardingColumn = env.getProperty("shardingjdbc.tables.standard.sharding-column");
-        //配置分库 + 分表策略
         tableRuleConfig.setDatabaseShardingStrategyConfig(new InlineShardingStrategyConfiguration(
                 databaseShardingColumn, databaseAlgorithmExpression.replace("->", "")));
         //分库分表算法

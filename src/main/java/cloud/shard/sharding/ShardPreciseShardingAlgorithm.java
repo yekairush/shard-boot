@@ -28,6 +28,7 @@ public class ShardPreciseShardingAlgorithm implements PreciseShardingAlgorithm<L
 		logger.info("collection:" + JSON.toJSONString(availableTargetNames) + ",preciseShardingValue:" + JSON.toJSONString(shardingValue));
 		//注意分片数shardingjdbc.actual-data-nodes=ds$->{0..1}.user_$->{[0, 1, 2]}
 		//分库分表
+		//分表策略，这里不能跟分库策略一样，否则会导致有一半数据表没有机会插入数据
 		String postfix = "" + (shardingValue.getValue() / 2) % 3;
 		logger.info("ShardPreciseShardingAlgorithm--->postfix " + postfix);
 		for (String tableName : availableTargetNames) {
